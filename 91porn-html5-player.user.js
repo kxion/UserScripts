@@ -1,10 +1,14 @@
 // ==UserScript==
-// @name       91Porn HTML5 Player
-// @version    0.1
+// @name         91Porn HTML5 Player
+// @version      0.2
+// @author       ytzong
 // @description  91Porn
-// @include      http://email.91dizhi.at.gmail.com.9h8.space/view_video.php*
-// @copyright  2016+
+// @include      http://email.91dizhi.at.gmail.com.9h8.space/*
+// @copyright    2016+
+// @grant        GM_addStyle
 // ==/UserScript==
+
+GM_addStyle('#container_video td[align="right"],#container_video td[align="left"], #topbar {display:none !important}#leftside{width:100% !important}  #recently, #userinfo, #mediumbox, #mostactive, #topwatched, #signup, #browsegroup, #viewvideo, #recently-added, #myvideo, #myfriends, #groups, #bookmark, #videodetails, #sharedetails, #videocomment {width:auto !important}');
 
 function addJQuery(callback) {
     var script = document.createElement("script");
@@ -18,11 +22,12 @@ function addJQuery(callback) {
 }
 function main() {
     /*
-    $('#topbar').remove();
-    $.removeCookie('watch_times');
     $.removeCookie('__cfduid');
     $.removeCookie('CLIPSHARE');
     */
+    $.cookie('level', '6');
+    $.cookie('user_level', '6');
+    $.removeCookie('watch_times');
     var mp4 = 0;
     if( typeof(so) != 'undefined'){
         if ($('#mediaspace img[src="images/hd.png"]').length > 0) mp4 = 1;
