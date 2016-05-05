@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      0.2
+// @version      0.3
 // @author       ytzong
 // @description  91Porn
 // @include      http://email.91dizhi.at.gmail.com.9h8.space/*
@@ -8,7 +8,7 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-GM_addStyle('#container_video td[align="right"],#container_video td[align="left"], #topbar {display:none !important}#leftside{width:100% !important}  #recently, #userinfo, #mediumbox, #mostactive, #topwatched, #signup, #browsegroup, #viewvideo, #recently-added, #myvideo, #myfriends, #groups, #bookmark, #videodetails, #sharedetails, #videocomment {width:auto !important}');
+GM_addStyle('#container_video table {width:100% !important}#container_video td[align="right"],#container_video td[align="left"] {display:none !important}#leftside{width:100% !important} #recently, #userinfo, #mediumbox, #mostactive, #topwatched, #signup, #browsegroup, #viewvideo, #recently-added, #myvideo, #myfriends, #groups, #bookmark, #videodetails, #sharedetails, #videocomment {width:auto !important}');
 
 function addJQuery(callback) {
     var script = document.createElement("script");
@@ -25,6 +25,7 @@ function main() {
     $.removeCookie('__cfduid');
     $.removeCookie('CLIPSHARE');
     */
+    $('#topbar').remove();
     $.cookie('level', '6');
     $.cookie('user_level', '6');
     $.removeCookie('watch_times');
@@ -37,9 +38,11 @@ function main() {
             str = decodeURIComponent(str);
             str = str.substring(5, str.length - 2);
             console.log(str);
-            $('#mediaspace').html('<video src="' + str + '" controls autoplay width="100%" height="100%"></video>');
+            var height = $(window).height();
+            $('#mediaspace').html('<video src="' + str + '" controls autoplay width="100%" height="100%" style="min-height:' + height + 'px"></video>');
         });
     }
+    $('#rightside').parent().attr('width', '315');
 }
 
 addJQuery(window.setTimeout(main, 1000));
