@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      0.3
+// @version      0.4
 // @author       ytzong
 // @description  91Porn
 // @include      http://email.91dizhi.at.gmail.com.9h8.space/*
@@ -40,9 +40,9 @@ function main() {
             console.log(str);
             var height = $(window).height();
             $('#mediaspace').html('<video src="' + str + '" controls autoplay width="100%" height="100%" style="min-height:' + height + 'px"></video>');
+            $('#rightside').parent().attr('width', '315');
         });
     }
-    $('#rightside').parent().attr('width', '315');
 }
 
 addJQuery(window.setTimeout(main, 1000));
