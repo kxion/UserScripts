@@ -6,22 +6,12 @@
 // @include     https://movie.douban.com/people/*
 // @include     http://www.mrskin.com/*
 // @include     https://www.mrskin.com/*
-// @version     0.1
+// @version     0.2
 // @grant        GM_addStyle
+// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // ==/UserScript==
 
 GM_addStyle('.l-mrstrap-container{width:100% !important}.mrskin-modal-video-player {max-width:none !important}.mrskin-modal-video-player{padding:5px 0 !important;margin-top:-40px !important}.yui3-panel {height: 100% !important;width: 100% !important;left: 0 !important}.mrskin-scene-player-wrapper{width: auto !important}.mrskin-video-wrapper {height:auto !important;width: auto !important;}#mrskinVideo_wrapper{height:730px !important;width: auto !important;}');
-
-function addJQuery(callback) {
-	var script = document.createElement("script");
-	script.setAttribute("src", "//code.jquery.com/jquery-2.1.4.min.js");
-	script.addEventListener('load', function() {
-		var script = document.createElement("script");
-		script.textContent = "(" + callback.toString() + ")();";
-		document.body.appendChild(script);
-	}, false);
-	document.body.appendChild(script);
-}
 
 function main() {
     //
@@ -50,4 +40,4 @@ function main() {
 
 }
 
-addJQuery(main);
+main();
