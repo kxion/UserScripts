@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      1.3
+// @version      1.4
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -133,7 +133,7 @@ if ($('span.pagingnav').length > 0) {
 }
 */
 //http://joji.me/zh-cn/blog/how-to-develop-high-performance-onscroll-event
-if ($('span.pagingnav').length > 0) {
+if ($('span.pagingnav').length > 0 && $('span.pagingnav').next().length > 0) {
     var next = $('span.pagingnav').next().attr('href');
     var $window = $(window);
     var $document = $(document);
