@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      1.4
+// @version      1.5
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -80,6 +80,7 @@ function YTPlay(){
         if (e.keyCode == 82) {
             degree += 90;
             rotate(degree);
+            $('#viewvideo-content').get(0).scrollIntoView();
         }
         //D
         if (e.keyCode == 68) {
