@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      1.7
+// @version      1.8
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
+// @include      http://d.u6p.co//*
 // @include      http://*91*.space/*
 // @include      http://*9p1*.space/*
 // @copyright    2016+
@@ -16,7 +17,7 @@ var pathnames = location.pathname.split('/');
 var pathname = pathnames[pathnames.length - 1];
 console.log(pathname);
 
-GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
+GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0 1em;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 
 main();
 window.setTimeout(YTPlay, 500);
@@ -40,8 +41,11 @@ function main() {
     $('#viewvideo-content, .videoplayer').addClass('no-margin');
     $('.imagechannelinfo, #useraction, #search').addClass('margin-auto');
     $('.imagechannelinfo').css('width','500px');
-    $('#viewvideo-title').attr('style', 'position: fixed;top: 0;z-index: 9999999999;');
-    $('#videodetails-content .title a').attr('style', 'padding:3px 10px;background-color:yellow; font-size:1.5em');
+    $('#navsubbar p').attr('style', 'text-align: center !important;text-indent: 0 !important;');
+    //$('#videodetails-content .title a').attr('style', 'right:0; padding:0 2em;font-size:16px;line-height:22px;');
+    //$('#videodetails-content a .title').attr('style', 'right:10em; padding:0 2em;font-size:16px;line-height:22px;');
+    $('#viewvideo-title').addClass('fixed');
+    $('#latestvideo').attr('style', 'position: absolute;left:50%;top:200px');
     /*
     $.removeCookie('__cfduid');
     $.removeCookie('CLIPSHARE');
@@ -74,6 +78,8 @@ function YTPlay(){
             var width = $('.videoplayer').width();
             $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
             $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
+            $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+            $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
             $('#rightside').parent().attr('width', '0');
             $("video").on("error", function(err) {
                 location.reload(true);
@@ -110,6 +116,14 @@ function YTPlay(){
         //D
         if (e.keyCode == 68) {
             $('#yt-download').get(0).click();
+        }
+        //C
+        if (e.keyCode == 67) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($('#yt-download').text().trim()).select();
+            document.execCommand("copy");
+            $temp.remove();
         }
         //P
         if (e.keyCode == 80) {
