@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      1.8
+// @version      1.9
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -17,7 +17,7 @@ var pathnames = location.pathname.split('/');
 var pathname = pathnames[pathnames.length - 1];
 console.log(pathname);
 
-GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0 1em;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
+GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 
 main();
 window.setTimeout(YTPlay, 500);
@@ -25,15 +25,15 @@ window.setTimeout(YTPlay, 500);
 function main() {
     $('td[width="0"]').remove();
     $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar, embed').addClass('none');
-    $('#container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
-    $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb').addClass('no-float');
+    $('#submenu, #subcontent, #container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
+    $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p').addClass('no-float');
     $('#myvideo-content, #viewvideo-content, #viewvideo-title').addClass('no-bg');
     $('#myvideo-content, #videobox table tr td, #viewvideo-title').addClass('text-center');
     $('.maindescwithoutborder, .imagechannelinfo').addClass('text-left');
     $('.myvideo').addClass('clearfix');
-    $('.myvideo, .listchannellarge, #videodetails-content .title a, .listchannellarge .imagechannel, .imagechannelinfo').addClass('inline-block');
+    $('.myvideo, .listchannellarge, #videodetails-content .title a, .listchannellarge .imagechannel, .imagechannelinfo, #subcontent p').addClass('inline-block');
     $('.myvideo').removeClass('blue');
-    $('.videothumb, .listchannellarge .imagechannel img').addClass('preview');
+    $('.videothumb, .listchannellarge .imagechannel img, #subcontent p a img').addClass('preview');
     //$('#myvideo-content, #videobox table tr td, #viewvideo-content').addClass('bg-white');
     $('table[width="99%"], td[width="784"], td[width="784"] table, #viewvideo, #viewvideo-title').addClass('full-width');
     $('#videobox table tr td, .listchannellarge, #fullbox-content,#viewvideo-content, #viewvideo').addClass('no-padding');
@@ -41,6 +41,8 @@ function main() {
     $('#viewvideo-content, .videoplayer').addClass('no-margin');
     $('.imagechannelinfo, #useraction, #search').addClass('margin-auto');
     $('.imagechannelinfo').css('width','500px');
+    $('#subcontent p').addClass('border-box');
+    $('#subcontent p').css('width','49%');
     $('#navsubbar p').attr('style', 'text-align: center !important;text-indent: 0 !important;');
     //$('#videodetails-content .title a').attr('style', 'right:0; padding:0 2em;font-size:16px;line-height:22px;');
     //$('#videodetails-content a .title').attr('style', 'right:10em; padding:0 2em;font-size:16px;line-height:22px;');
@@ -133,12 +135,12 @@ function YTPlay(){
         //右箭头
         if (e.keyCode == 39) {
             if (e.metaKey) video.volume = video.volume + 0.1;
-            else video.currentTime = video.currentTime + 10;
+            else video.currentTime = video.currentTime + 7;
         }
         //左箭头
         if (e.keyCode == 37) {
             if (e.metaKey) video.volume = 0.1;
-            else video.currentTime = video.currentTime - 10;
+            else video.currentTime = video.currentTime - 7;
         }
         //ALT + 右箭头
         if (e.altKey && e.keyCode == 39) {
