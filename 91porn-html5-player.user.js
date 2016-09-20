@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.0
+// @version      2.1
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -17,10 +17,12 @@ var pathnames = location.pathname.split('/');
 var pathname = pathnames[pathnames.length - 1];
 console.log(pathname);
 
-GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
+GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
 main();
-window.setTimeout(YTPlay2, 500);
+var pagePath = window.location.pathname;
+if (pagePath == '/view_video_hd.php') window.setTimeout(YTPlay, 500);
+if (pagePath == '/view_video.php')  window.setTimeout(YTPlay2, 500);
 
 function main() {
     $('td[width="0"]').remove();
@@ -31,7 +33,7 @@ function main() {
     $('#myvideo-content, #videobox table tr td').addClass('text-center');
     $('.maindescwithoutborder, .imagechannelinfo').addClass('text-left');
     $('.myvideo').addClass('clearfix');
-    $('.myvideo, .listchannellarge, #videodetails-content .title a, .listchannellarge .imagechannel, .imagechannelinfo, #subcontent p').addClass('inline-block');
+    $('.myvideo, .listchannellarge, .listchannellarge .imagechannel, .imagechannelinfo, #subcontent p').addClass('inline-block');
     $('.myvideo').removeClass('blue');
     $('.videothumb, .listchannellarge .imagechannel img, #subcontent p a img').addClass('preview');
     //$('#myvideo-content, #videobox table tr td, #viewvideo-content').addClass('bg-white');
@@ -116,7 +118,7 @@ function YTPlay(){
                 $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
                 $('#rightside').parent().attr('width', '0');
                 $("video").on("error", function(err) {
-                    //location.reload(true);
+                    location.reload(true);
                 });
             },
             beforeSend: function(xhr) {
