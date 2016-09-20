@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      1.9
+// @version      2.0
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -17,10 +17,10 @@ var pathnames = location.pathname.split('/');
 var pathname = pathnames[pathnames.length - 1];
 console.log(pathname);
 
-GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
-
+GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
+//#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
 main();
-window.setTimeout(YTPlay, 500);
+window.setTimeout(YTPlay2, 500);
 
 function main() {
     $('td[width="0"]').remove();
@@ -28,7 +28,7 @@ function main() {
     $('#submenu, #subcontent, #container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
     $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p').addClass('no-float');
     $('#myvideo-content, #viewvideo-content, #viewvideo-title').addClass('no-bg');
-    $('#myvideo-content, #videobox table tr td, #viewvideo-title').addClass('text-center');
+    $('#myvideo-content, #videobox table tr td').addClass('text-center');
     $('.maindescwithoutborder, .imagechannelinfo').addClass('text-left');
     $('.myvideo').addClass('clearfix');
     $('.myvideo, .listchannellarge, #videodetails-content .title a, .listchannellarge .imagechannel, .imagechannelinfo, #subcontent p').addClass('inline-block');
@@ -54,12 +54,41 @@ function main() {
     */
     $.cookie('level', '6');
     $.cookie('user_level', '6');
-    $.removeCookie('watch_times');
+    $.cookie('watch_times', '1');
     $.cookie('EMAILVERIFIED', 'yes');
-}
-function YTPlay(){
     $('#viewvideo-content').get(0).scrollIntoView();
     $('#topbar').remove();
+}
+function YTPlay2(){
+    var mp4 = 0;
+    var strHD = '';
+    if ($('#mediaspace img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
+        mp4 = 1;
+        strHD = 'HD ';
+    }
+    console.log(mp4);
+    var title = $('#viewvideo-title').text().trim();
+    var str = $('#useraction .floatmenu a').eq(3).attr('href');
+    console.log(str);
+    $('#viewvideo-title').html('<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
+    $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+    $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
+    $('#viewvideo-title').append($('#mediaspace a').eq(0).clone());
+    var height = $(window).height();
+    var width = $('.videoplayer').width();
+    $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
+    $('#rightside').parent().attr('width', '0');
+    $("video").on("error", function(err) {
+        location.reload(true);
+    });
+    /*
+    $('#mediaplayer_jwplayer_display_iconBackground').click();
+    $('#mediaplayer_jwplayer_controlbar_fullscreenButton').click();
+    $('#mediaplayer_video').attr('loop', 'loop').attr('controls', 'controls');
+    var str = $('#mediaplayer_video').attr('src');
+    */
+}
+function YTPlay(){
     var mp4 = 0;
     if( typeof(so) != 'undefined'){
         var strHD = '';
@@ -68,89 +97,98 @@ function YTPlay(){
             strHD = 'HD ';
         }
         console.log(mp4);
-        var title = $('#viewvideo-title').text().trim();
         var timestamp = $.now();
-        mp4 = 0;
-        $.get('getfile.php?t=' + timestamp + '&VID=' +so.getVariable('file') +'&mp4=' + mp4 + '&seccode=' +so.getVariable('seccode') +'&max_vid='+so.getVariable('max_vid'),function(data,status){
-            var str = data;
-            str = decodeURIComponent(str);
-            str = str.substring(5, str.length - 2);
-            console.log(str);
-            var height = $(window).height();
-            var width = $('.videoplayer').width();
-            $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
-            $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
-            $('#viewvideo-title').append($('#videodetails-content .title a').clone());
-            $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
-            $('#rightside').parent().attr('width', '0');
-            $("video").on("error", function(err) {
-                location.reload(true);
-            });
+        //mp4 = 0;
+        $.ajax({
+            type: "GET",
+            url: 'getfile.php?VID=' +so.getVariable('file') +'&mp4=' + mp4 + '&seccode=' +so.getVariable('seccode') +'&max_vid='+so.getVariable('max_vid'),
+            success: function(data) {
+                var str = data;
+                str = decodeURIComponent(str);
+                str = str.substring(5, str.length - 2);
+                console.log(str);
+                var height = $(window).height();
+                var width = $('.videoplayer').width();
+                $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
+                var title = $('#viewvideo-title').text().trim();
+                $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
+                $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+                $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
+                $('#rightside').parent().attr('width', '0');
+                $("video").on("error", function(err) {
+                    //location.reload(true);
+                });
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-Requested-With", "ShockwaveFlash/23.0.0.173");
+                xhr.setRequestHeader("Proxy-Connection", "keep-alive");
+            }
         });
     }
-    function rotate(deg) {
-        var height = $(window).height();
-        var width = $('.videoplayer').width();
-        /*
+}
+function rotate(deg) {
+    var height = $(window).height();
+    var width = $('.videoplayer').width();
+    /*
         var bestHeight = width * 9/16;
         if (bestHeight > height) width = height * 16/9;
         else height = bestHeight;
         */
-        var zoom = 1;
-        if (deg % 360 == 90 || deg % 360 == 270) {
-            zoom = height/width;
-        }
-        else {
-            zoom = 1;
-        }
-        $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;width:' + width + 'px; height:' + height + 'px;');
+    var zoom = 1;
+    if (deg % 360 == 90 || deg % 360 == 270) {
+        zoom = height/width;
     }
-    var degree = 0;
-    $(document).keydown(function(e) {
-        var video = $('video')[0];
-        //video.attr('controls', 'controls');
-        //R
-        if (e.keyCode == 82) {
-            degree += 90;
-            rotate(degree);
-            $('#viewvideo-content').get(0).scrollIntoView();
-        }
-        //D
-        if (e.keyCode == 68) {
-            $('#yt-download').get(0).click();
-        }
-        //C
-        if (e.keyCode == 67) {
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val($('#yt-download').text().trim()).select();
-            document.execCommand("copy");
-            $temp.remove();
-        }
-        //P
-        if (e.keyCode == 80) {
-            if (video.paused) video.play();
-            else video.pause();
-        }
-        //右箭头
-        if (e.keyCode == 39) {
-            if (e.metaKey) video.volume = video.volume + 0.1;
-            else video.currentTime = video.currentTime + 7;
-        }
-        //左箭头
-        if (e.keyCode == 37) {
-            if (e.metaKey) video.volume = 0.1;
-            else video.currentTime = video.currentTime - 7;
-        }
-        //ALT + 右箭头
-        if (e.altKey && e.keyCode == 39) {
-            video.currentTime = video.currentTime + 60;
-        }
-        //ALT + 左箭头
-        if (e.altKey && e.keyCode == 37) {
-            video.currentTime = video.currentTime - 60;
-        }
-        /*
+    else {
+        zoom = 1;
+    }
+    $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;width:' + width + 'px; height:' + height + 'px;');
+}
+var degree = 0;
+$(document).keydown(function(e) {
+    var video = $('video')[0];
+    //video.attr('controls', 'controls');
+    //R
+    if (e.keyCode == 82) {
+        degree += 90;
+        rotate(degree);
+        $('#viewvideo-content').get(0).scrollIntoView();
+    }
+    //D
+    if (e.keyCode == 68) {
+        $('#yt-download').get(0).click();
+    }
+    //C
+    if (e.keyCode == 67) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val($('#yt-download').text().trim()).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+    //P
+    if (e.keyCode == 80) {
+        if (video.paused) video.play();
+        else video.pause();
+    }
+    //右箭头
+    if (e.keyCode == 39) {
+        if (e.metaKey) video.volume = video.volume + 0.1;
+        else video.currentTime = video.currentTime + 7;
+    }
+    //左箭头
+    if (e.keyCode == 37) {
+        if (e.metaKey) video.volume = 0.1;
+        else video.currentTime = video.currentTime - 7;
+    }
+    //ALT + 右箭头
+    if (e.altKey && e.keyCode == 39) {
+        video.currentTime = video.currentTime + 60;
+    }
+    //ALT + 左箭头
+    if (e.altKey && e.keyCode == 37) {
+        video.currentTime = video.currentTime - 60;
+    }
+    /*
         //Q
         if (e.keyCode == 81) {
             self.location = $('span.pagingnav').next().attr('href');
@@ -160,8 +198,7 @@ function YTPlay(){
             self.location = $('span.pagingnav').prev().attr('href');
         }
         */
-    });
-}
+});
 /*
 if ($('span.pagingnav').length > 0) {
     //$(body).css('padding-bottom', '100px');
