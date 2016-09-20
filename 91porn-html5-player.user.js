@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.1
+// @version      2.2
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -13,16 +13,15 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
 // ==/UserScript==
 
-var pathnames = location.pathname.split('/');
-var pathname = pathnames[pathnames.length - 1];
+var pathname = window.location.pathname;
 console.log(pathname);
+if (pathname == '/view_video_hd.php') { window.setTimeout(YTPlay, 500); }
+if (pathname == '/view_video.php') { window.setTimeout(YTPlay2, 500); }
 
 GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
+
 main();
-var pagePath = window.location.pathname;
-if (pagePath == '/view_video_hd.php') window.setTimeout(YTPlay, 500);
-if (pagePath == '/view_video.php')  window.setTimeout(YTPlay2, 500);
 
 function main() {
     $('td[width="0"]').remove();
@@ -60,6 +59,80 @@ function main() {
     $.cookie('EMAILVERIFIED', 'yes');
     $('#viewvideo-content').get(0).scrollIntoView();
     $('#topbar').remove();
+
+    function rotate(deg) {
+        var height = $(window).height();
+        var width = $('.videoplayer').width();
+        /*
+            var bestHeight = width * 9/16;
+            if (bestHeight > height) width = height * 16/9;
+            else height = bestHeight;
+            */
+        var zoom = 1;
+        if (deg % 360 == 90 || deg % 360 == 270) {
+            zoom = height/width;
+        }
+        else {
+            zoom = 1;
+        }
+        $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;width:' + width + 'px; height:' + height + 'px;');
+    }
+    var degree = 0;
+    $(document).keydown(function(e) {
+        var video = $('video')[0];
+        //video.attr('controls', 'controls');
+        //R
+        if (e.keyCode == 82) {
+            degree += 90;
+            rotate(degree);
+            $('#viewvideo-content').get(0).scrollIntoView();
+        }
+        //D
+        if (e.keyCode == 68) {
+            $('#yt-download').get(0).click();
+        }
+        //C
+        if (e.keyCode == 67) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($('#yt-download').text().trim()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+        //P
+        if (e.keyCode == 80) {
+            if (video.paused) video.play();
+            else video.pause();
+        }
+        //右箭头
+        if (e.keyCode == 39) {
+            if (e.metaKey) video.volume = video.volume + 0.1;
+            else video.currentTime = video.currentTime + 7;
+        }
+        //左箭头
+        if (e.keyCode == 37) {
+            if (e.metaKey) video.volume = 0.1;
+            else video.currentTime = video.currentTime - 7;
+        }
+        //ALT + 右箭头
+        if (e.altKey && e.keyCode == 39) {
+            video.currentTime = video.currentTime + 60;
+        }
+        //ALT + 左箭头
+        if (e.altKey && e.keyCode == 37) {
+            video.currentTime = video.currentTime - 60;
+        }
+        /*
+            //Q
+            if (e.keyCode == 81) {
+                self.location = $('span.pagingnav').next().attr('href');
+            }
+            //W
+            if (e.keyCode == 87) {
+                self.location = $('span.pagingnav').prev().attr('href');
+            }
+            */
+    });
 }
 function YTPlay2(){
     var mp4 = 0;
@@ -128,81 +201,8 @@ function YTPlay(){
         });
     }
 }
-function rotate(deg) {
-    var height = $(window).height();
-    var width = $('.videoplayer').width();
-    /*
-        var bestHeight = width * 9/16;
-        if (bestHeight > height) width = height * 16/9;
-        else height = bestHeight;
-        */
-    var zoom = 1;
-    if (deg % 360 == 90 || deg % 360 == 270) {
-        zoom = height/width;
-    }
-    else {
-        zoom = 1;
-    }
-    $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;width:' + width + 'px; height:' + height + 'px;');
-}
-var degree = 0;
-$(document).keydown(function(e) {
-    var video = $('video')[0];
-    //video.attr('controls', 'controls');
-    //R
-    if (e.keyCode == 82) {
-        degree += 90;
-        rotate(degree);
-        $('#viewvideo-content').get(0).scrollIntoView();
-    }
-    //D
-    if (e.keyCode == 68) {
-        $('#yt-download').get(0).click();
-    }
-    //C
-    if (e.keyCode == 67) {
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val($('#yt-download').text().trim()).select();
-        document.execCommand("copy");
-        $temp.remove();
-    }
-    //P
-    if (e.keyCode == 80) {
-        if (video.paused) video.play();
-        else video.pause();
-    }
-    //右箭头
-    if (e.keyCode == 39) {
-        if (e.metaKey) video.volume = video.volume + 0.1;
-        else video.currentTime = video.currentTime + 7;
-    }
-    //左箭头
-    if (e.keyCode == 37) {
-        if (e.metaKey) video.volume = 0.1;
-        else video.currentTime = video.currentTime - 7;
-    }
-    //ALT + 右箭头
-    if (e.altKey && e.keyCode == 39) {
-        video.currentTime = video.currentTime + 60;
-    }
-    //ALT + 左箭头
-    if (e.altKey && e.keyCode == 37) {
-        video.currentTime = video.currentTime - 60;
-    }
-    /*
-        //Q
-        if (e.keyCode == 81) {
-            self.location = $('span.pagingnav').next().attr('href');
-        }
-        //W
-        if (e.keyCode == 87) {
-            self.location = $('span.pagingnav').prev().attr('href');
-        }
-        */
-});
 /*
-if ($('span.pagingnav').length > 0) {
+if ($('span.pagingnav').length > 0 && $('span.pagingnav').next().length > 0) {
     //$(body).css('padding-bottom', '100px');
     $(window).scroll(function() {
        if($(window).scrollTop() + $(window).height() == $(document).height()) {
