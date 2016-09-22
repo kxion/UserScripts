@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.2
+// @version      2.3
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -15,7 +15,7 @@
 
 var pathname = window.location.pathname;
 console.log(pathname);
-if (pathname == '/view_video_hd.php') { window.setTimeout(YTPlay, 500); }
+if (pathname == '/view_video_hd.php') { /*window.setTimeout(YTPlay, 500);*/ }
 if (pathname == '/view_video.php') { window.setTimeout(YTPlay2, 500); }
 
 GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
@@ -25,7 +25,7 @@ main();
 
 function main() {
     $('td[width="0"]').remove();
-    $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar, embed').addClass('none');
+    $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar').addClass('none');
     $('#submenu, #subcontent, #container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
     $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p').addClass('no-float');
     $('#myvideo-content, #viewvideo-content, #viewvideo-title').addClass('no-bg');
@@ -57,7 +57,6 @@ function main() {
     $.cookie('user_level', '6');
     $.cookie('watch_times', '1');
     $.cookie('EMAILVERIFIED', 'yes');
-    $('#viewvideo-content').get(0).scrollIntoView();
     $('#topbar').remove();
 
     function rotate(deg) {
@@ -89,20 +88,28 @@ function main() {
         }
         //D
         if (e.keyCode == 68) {
+            copyTitle();
             $('#yt-download').get(0).click();
         }
-        //C
-        if (e.keyCode == 67) {
+        function copyTitle() {
             var $temp = $("<input>");
             $("body").append($temp);
             $temp.val($('#yt-download').text().trim()).select();
             document.execCommand("copy");
             $temp.remove();
         }
+        //C
+        if (e.keyCode == 67) {
+            copyTitle();
+        }
         //P
         if (e.keyCode == 80) {
             if (video.paused) video.play();
             else video.pause();
+        }
+        //V
+        if (e.keyCode == 86) {
+            window.location.href = window.location.href.replace('view_video.php', 'view_video_hd.php');
         }
         //右箭头
         if (e.keyCode == 39) {
@@ -139,16 +146,16 @@ function YTPlay2(){
     var strHD = '';
     if ($('#mediaspace img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
         mp4 = 1;
-        strHD = 'HD ';
+        strHD = ' HD';
     }
     console.log(mp4);
     var title = $('#viewvideo-title').text().trim();
     var str = $('#useraction .floatmenu a').eq(3).attr('href');
     console.log(str);
-    $('#viewvideo-title').html('<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
-    $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+    $('#viewvideo-title').html('<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>' + strHD);
     $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
-    $('#viewvideo-title').append($('#mediaspace a').eq(0).clone());
+    $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+    //$('#viewvideo-title').append($('#mediaspace a').eq(0).clone());
     var height = $(window).height();
     var width = $('.videoplayer').width();
     $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
@@ -156,6 +163,7 @@ function YTPlay2(){
     $("video").on("error", function(err) {
         location.reload(true);
     });
+    $('#viewvideo-content').get(0).scrollIntoView();
     /*
     $('#mediaplayer_jwplayer_display_iconBackground').click();
     $('#mediaplayer_jwplayer_controlbar_fullscreenButton').click();
