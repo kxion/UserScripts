@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.4
+// @version      2.5
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -109,6 +109,7 @@ function main() {
         }
         //V
         if (e.keyCode == 86) {
+            copyTitle();
             window.location.href = window.location.href.replace('view_video.php', 'view_video_hd.php');
         }
         //A
