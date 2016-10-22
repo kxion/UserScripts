@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.7
+// @version      2.8
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -21,8 +21,7 @@ if (pathname == '/view_video.php') { window.setTimeout(YTPlay, 500); }
 var myservers = ['68.235.35.100:8080', 'h.t9k.space:8080', '192.240.120.2:8080'/*, '192.133.81.234:8080', 'e.t9k.space', '192.133.81.234:8080'*/];
 var current = 0;
 
-GM_addStyle('body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
-GM_addStyle('video{width:100%}');
+GM_addStyle('video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
 
 main();
@@ -61,7 +60,7 @@ function main() {
     $.cookie('user_level', '6');
     $.cookie('watch_times', '1');
     $.cookie('EMAILVERIFIED', 'yes');
-    $('#topbar').remove();
+    $('#topbar').hide();
 
     function rotate(deg) {
         var height = $(window).height();
@@ -98,7 +97,7 @@ function main() {
         function copyTitle() {
             var $temp = $("<input>");
             $("body").append($temp);
-            $temp.val($('#yt-download').text().trim()).select();
+            $temp.val($('#videodetails-content a').eq(0).text().trim()  + ' - ' + $('#yt-download').text().trim()).select();
             document.execCommand("copy");
             $temp.remove();
         }
@@ -124,9 +123,9 @@ function main() {
         }
         //S
         if (e.keyCode == 83) {
-            var allLink = $('#videodetails-content a').eq(0).attr('href');
-            if (allLink.length > 0)
-                window.location.href = allLink;
+            var authorLink = $('#videodetails-content a').eq(0).attr('href');
+            if (authorLink.length > 0)
+                window.location.href = authorLink;
         }
         //右箭头
         if (e.keyCode == 39) {
@@ -146,16 +145,16 @@ function main() {
         if (e.altKey && e.keyCode == 37) {
             video.currentTime = video.currentTime - 60;
         }
-        /*
-            //Q
-            if (e.keyCode == 81) {
-                self.location = $('span.pagingnav').next().attr('href');
-            }
-            //W
-            if (e.keyCode == 87) {
-                self.location = $('span.pagingnav').prev().attr('href');
-            }
-            */
+        //Q 或 J
+        if (e.keyCode == 81 || e.keyCode == 74) {
+            var next = $('span.pagingnav').next().attr('href');
+            if (next.length > 0) self.location = next;
+        }
+        //W 或 K
+        if (e.keyCode == 87 || e.keyCode == 75) {
+            var prev = $('span.pagingnav').prev().attr('href');
+            if (prev.length > 0) self.location = prev;
+        }
     });
 }
 function YTPlay2(){
@@ -191,12 +190,6 @@ function YTPlay2(){
         else location.reload(true);
     });
     $('#viewvideo-content').get(0).scrollIntoView();
-    /*
-    $('#mediaplayer_jwplayer_display_iconBackground').click();
-    $('#mediaplayer_jwplayer_controlbar_fullscreenButton').click();
-    $('#mediaplayer_video').attr('loop', 'loop').attr('controls', 'controls');
-    var str = $('#mediaplayer_video').attr('src');
-    */
 }
 function YTPlay(){
     var mp4 = 0;
@@ -260,16 +253,17 @@ if ($('span.pagingnav').length > 0 && $('span.pagingnav').next().length > 0) {
            location.href = next;
        }
     });
-}
-*/
+}*/
 //http://joji.me/zh-cn/blog/how-to-develop-high-performance-onscroll-event
-if ($('span.pagingnav').length > 0 && $('span.pagingnav').next().length > 0) {
-    var next = $('span.pagingnav').next().attr('href');
+
+var next = $('span.pagingnav').next().attr('href');
+console.log(next);
+if (next.length > 0) {
     var $window = $(window);
     var $document = $(document);
     var scroll = function () {
         if($window.scrollTop() + $window.height() == $document.height()) {
-           location.href = next;
+           window.location.href = next;
         }
     };
     var raf = window.requestAnimationFrame ||
