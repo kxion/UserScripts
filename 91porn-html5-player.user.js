@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      2.8
+// @version      3.1
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
 // @include      http://d.u6p.co//*
+// @include      http://*91dizhi*/*
 // @include      http://*91*.space/*
-// @include      http://*9p1*.space/*
 // @copyright    2016+
 // @run-at       document-end
 // @grant        GM_addStyle
@@ -18,14 +18,18 @@ console.log(pathname);
 if (pathname == '/view_video_hd.php') { /*window.setTimeout(YTPlay, 500);*/ }
 if (pathname == '/view_video.php') { window.setTimeout(YTPlay, 500); }
 
-var myservers = ['68.235.35.100:8080', 'h.t9k.space:8080', '192.240.120.2:8080'/*, '192.133.81.234:8080', 'e.t9k.space', '192.133.81.234:8080'*/];
+var myservers = ['68.235.35.100:8080', 'h.t9k.space:8080', '192.240.120.2:8080', '192.133.81.234:8080', 'e.t9k.space', '192.133.81.234:8080'];
 var current = 0;
 
 GM_addStyle('video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
 
 main();
-
+function scrollToPlayer() {
+    $('html, body').animate({
+        scrollTop: $("#yt-top").offset().top
+    }, 0);
+}
 function main() {
     $('td[width="0"]').remove();
     $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar').addClass('none');
@@ -60,11 +64,11 @@ function main() {
     $.cookie('user_level', '6');
     $.cookie('watch_times', '1');
     $.cookie('EMAILVERIFIED', 'yes');
-    $('#topbar').hide();
+    $('#topbar, #mediaspace').hide();
 
     function rotate(deg) {
         var height = $(window).height();
-        var width = $('.videoplayer').width();
+        var width = $('#yt-video').width();
         /*
             var bestHeight = width * 9/16;
             if (bestHeight > height) width = height * 16/9;
@@ -87,7 +91,8 @@ function main() {
         if (e.keyCode == 82) {
             degree += 90;
             rotate(degree);
-            $('#viewvideo-content').get(0).scrollIntoView();
+            //$('#yt-top').get(0).scrollIntoView();
+            scrollToPlayer();
         }
         //D
         if (e.keyCode == 68) {
@@ -178,9 +183,9 @@ function YTPlay2(){
     $('#viewvideo-title').append($('#videodetails-content .title a').clone());
     //$('#viewvideo-title').append($('#mediaspace a').eq(0).clone());
     var height = $(window).height();
-    $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video><p style="text-align:center"></p>');
+    $('.videoplayer').html('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video>');
     $('#rightside').parent().attr('width', '0');
-    $("video").on("error", function(err) {
+    $("#yt-video").on("error", function(err) {
         current++;
         if (current < myservers.length) {
             str = str.replace(myservers[current - 1], myservers[current]);
@@ -189,7 +194,7 @@ function YTPlay2(){
         }
         else location.reload(true);
     });
-    $('#viewvideo-content').get(0).scrollIntoView();
+    scrollToPlayer();
 }
 function YTPlay(){
     var mp4 = 0;
@@ -219,13 +224,13 @@ function YTPlay(){
                 str = str.replace(urlreplace, myservers[current]);
                 console.log(str);
                 var height = $(window).height();
-                $('.videoplayer').html('<video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video><p style="text-align:center"></p>');
+                $('.videoplayer').html('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video>');
                 var title = $('#viewvideo-title').text().trim();
                 $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
                 $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
                 $('#viewvideo-title').append($('#videodetails-content .title a').clone());
                 $('#rightside').parent().attr('width', '0');
-                $("video").on("error", function(err) {
+                $("#yt-video").on("error", function(err) {
                     current++;
                     if (current < myservers.length) {
                         str = str.replace(myservers[current - 1], myservers[current]);
@@ -234,7 +239,7 @@ function YTPlay(){
                     }
                     else location.reload(true);
                 });
-                $('#viewvideo-content').get(0).scrollIntoView();
+                scrollToPlayer();
             },
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("X-Requested-With", "ShockwaveFlash/23.0.0.173");

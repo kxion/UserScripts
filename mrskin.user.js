@@ -6,38 +6,112 @@
 // @include     https://movie.douban.com/people/*
 // @include     http://www.mrskin.com/*
 // @include     https://www.mrskin.com/*
-// @version     0.2
-// @grant        GM_addStyle
-// @require      https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
+// @version     0.4
+// @grant       GM_addStyle
+// @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // ==/UserScript==
 
-GM_addStyle('.l-mrstrap-container{width:100% !important}.mrskin-modal-video-player {max-width:none !important}.mrskin-modal-video-player{padding:5px 0 !important;margin-top:-40px !important}.yui3-panel {height: 100% !important;width: 100% !important;left: 0 !important}.mrskin-scene-player-wrapper{width: auto !important}.mrskin-video-wrapper {height:auto !important;width: auto !important;}#mrskinVideo_wrapper{height:730px !important;width: auto !important;}');
+GM_addStyle('#yt-video{width:100%;background-color:black;}.none{display:none !important}');
 
-function main() {
-    //
-    if (document.domain == 'movie.douban.com') {
-        $('.grid-view .title').each(function(){
-            var name = $(this).find('a').text();
-            name = name.substring(name.indexOf(' ') + 1)
-            $(this).append('<a style="float:right" target="_blank" href="http://www.mrskin.com/search/search?term=' + name + '"><em>' + name + '</em></a>')
-        })
+if (document.domain == 'movie.douban.com') {
+    $('.grid-view .title').each(function(){
+        var name = $(this).find('a').text();
+        name = name.substring(name.indexOf(' ') + 1);
+        $(this).append('<a style="float:right" target="_blank" href="http://www.mrskin.com/search/search?term=' + name + '"><em>' + name + '</em></a>');
+    });
+}
+else {
+    $('.media-item').each(function(){
+        $(this).removeClass('media-item');
+    });
+    $('.media-view').addClass('none');
+    var url = window.location.href;
+    if (url.includes('clipplayer')) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: function(data) {
+                var str = data.model.download_url;
+                var height = $(window).height();
+                $('#watchSceneView').prepend('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video>');
+                $('#yt-top').get(0).scrollIntoView();
+                var title = $('.media-title').text();
+                $('.media-title').append(' <a id="yt-download" class="none" href="' + str + '">' + title + '</a>');
+                $("#yt-video").on("error", function(err) {
+                    location.reload(true);
+                });
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("Accept", "application/json");
+            }
+        });
+
+        var degree = 0;
+        $(document).keydown(function(e) {
+            var video = $('video')[0];
+            //R
+            if (e.keyCode == 82) {
+                degree += 90;
+                rotate(degree);
+                $('#yt-top').get(0).scrollIntoView();
+            }
+            //D
+            if (e.keyCode == 68) {
+                copyTitle();
+                $('#yt-download').get(0).click();
+            }
+            function copyTitle() {
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($('#yt-download').text().trim()).select();
+                document.execCommand("copy");
+                $temp.remove();
+            }
+            //C
+            if (e.keyCode == 67) {
+                copyTitle();
+            }
+            //P
+            if (e.keyCode == 80) {
+                if (video.paused) video.play();
+                else video.pause();
+            }
+            //右箭头
+            if (e.keyCode == 39) {
+                if (e.metaKey) video.volume = video.volume + 0.1;
+                else video.currentTime = video.currentTime + 7;
+            }
+            //左箭头
+            if (e.keyCode == 37) {
+                if (e.metaKey) video.volume = 0.1;
+                else video.currentTime = video.currentTime - 7;
+            }
+            //ALT + 右箭头
+            if (e.altKey && e.keyCode == 39) {
+                video.currentTime = video.currentTime + 60;
+            }
+            //ALT + 左箭头
+            if (e.altKey && e.keyCode == 37) {
+                video.currentTime = video.currentTime - 60;
+            }
+        });
+    }
+}
+function rotate(deg) {
+    var height = $(window).height();
+    var width = $('#yt-video').width();
+    /*
+            var bestHeight = width * 9/16;
+            if (bestHeight > height) width = height * 16/9;
+            else height = bestHeight;
+            */
+    var zoom = 1;
+    if (deg % 360 == 90 || deg % 360 == 270) {
+        zoom = height/width;
     }
     else {
-        var parser = document.createElement('a');parser.href = window.location.href;
-        if (parser.pathname.indexOf('/clipplayer/') > -1) {
-            self.location = jQuery(".btn-group:nth-of-type(2) .btn:first-child").attr("href");
-        }
-        if (parser.pathname.indexOf('/search/search') > -1) {
-            self.location = jQuery('.mrstrap-grid h3 a').attr('href')
-        }
-        jQuery(document).keydown(function(e) {
-            //d
-            if(e.keyCode == 68) {
-                self.location = jQuery('#pjax-video .icon-download').parent().attr('href')
-            }
-        })
+        zoom = 1;
     }
-
+    $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;height:' + height + 'px;');
 }
 
-main();
