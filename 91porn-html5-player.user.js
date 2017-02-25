@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      3.2
+// @version      3.3
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -17,8 +17,18 @@ var pathname = window.location.pathname;
 console.log(pathname);
 if (pathname == '/view_video_hd.php') { /*window.setTimeout(YTPlay, 500);*/ }
 if (pathname == '/view_video.php') { window.setTimeout(YTPlay, 500); }
+if (pathname == '/video.php') {
+    $('.imagechannelinfo').contents().not("a, span, br").wrap("<b/>");
+    
+    $('.imagechannelinfo').each(function(i){
+        var num = parseInt($(this).children('.info').eq(4).next().text()) + parseInt($(this).children('.info').eq(5).next().text());
+        var view = parseInt($(this).children('.info').eq(3).next().text());
+        //var percent = parseInt(100 * num / view);
+        $(this).find('.title').parent().before('[' + num + '] ');
+    });
+}
 
-var myservers = ['68.235.35.100:8080', '192.240.120.2:8080', '192.133.81.234:8080', 'e.t9k.space', '192.133.81.234:8080', '192.133.81.234:443'];
+var myservers = ['68.235.35.100:8080', '192.133.81.234:8080', '192.133.81.234:443' /*, 'd.x5p.space',  'e.t9k.space'*/];
 var current = 0;
 
 GM_addStyle('video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
