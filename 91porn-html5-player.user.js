@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      3.3
+// @version      3.5
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -13,11 +13,16 @@
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
 // ==/UserScript==
 
+if (document.title == 'Connection Closed') {
+    alert('aaa');
+    location.reload(true);
+    return;
+}
 var pathname = window.location.pathname;
 console.log(pathname);
 if (pathname == '/view_video_hd.php') { /*window.setTimeout(YTPlay, 500);*/ }
 if (pathname == '/view_video.php') { window.setTimeout(YTPlay, 500); }
-if (pathname == '/video.php') {
+if (pathname == '/video.php' || pathname == '/v.php') {
     $('.imagechannelinfo').contents().not("a, span, br").wrap("<b/>");
     
     $('.imagechannelinfo').each(function(i){
@@ -26,12 +31,19 @@ if (pathname == '/video.php') {
         //var percent = parseInt(100 * num / view);
         $(this).find('.title').parent().before('[' + num + '] ');
     });
+    $('#videobox a').each(function(i){
+        var href = $(this).attr('href');
+        if (href.includes('view_video.php')) {
+            href = href.substring(0, href.indexOf('&'));
+            $(this).attr('href', href);
+        }
+    }); 
 }
 
 var myservers = ['68.235.35.100:8080', '192.133.81.234:8080', '192.133.81.234:443' /*, 'd.x5p.space',  'e.t9k.space'*/];
 var current = 0;
 
-GM_addStyle('video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
+GM_addStyle('a:visited {color: lightslategrey !important;}video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
 
 main();
@@ -254,6 +266,9 @@ function YTPlay(){
             beforeSend: function(xhr) {
                 xhr.setRequestHeader("X-Requested-With", "ShockwaveFlash/23.0.0.173");
                 xhr.setRequestHeader("Proxy-Connection", "keep-alive");
+            },
+            error: function() {                 
+                location.reload(true);
             }
         });
     }
