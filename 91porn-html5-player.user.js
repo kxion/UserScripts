@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      3.5
+// @version      4.0
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -20,9 +20,17 @@ if (document.title == 'Connection Closed') {
 }
 var pathname = window.location.pathname;
 console.log(pathname);
-if (pathname == '/view_video_hd.php') { /*window.setTimeout(YTPlay, 500);*/ }
+if (pathname == '/view_video_hd.php') { window.setTimeout(YTPlayHD, 500); }
 if (pathname == '/view_video.php') { window.setTimeout(YTPlay, 500); }
-if (pathname == '/video.php' || pathname == '/v.php') {
+if (pathname == '/v.php' || pathname == '/search_result.php') {
+    var strURL = window.location.href;
+    var strContain = 'viewtype=detailed';
+    if (!strURL.includes(strContain)) {
+        if (strURL.includes('?')) window.location.href = strURL + '&' + strContain;
+        else window.location.href = strURL + '?' + strContain;
+    }
+}
+if (pathname == '/video.php' || pathname == '/v.php' || pathname == '/search_result.php') {
     $('.imagechannelinfo').contents().not("a, span, br").wrap("<b/>");
     
     $('.imagechannelinfo').each(function(i){
@@ -40,7 +48,7 @@ if (pathname == '/video.php' || pathname == '/v.php') {
     }); 
 }
 
-var myservers = ['68.235.35.100:8080', '192.133.81.234:8080', '192.133.81.234:443' /*, 'd.x5p.space',  'e.t9k.space'*/];
+var myservers = ['68.235.35.100:8080', '192.133.81.234:8080', '192.133.81.234:443', '192.240.120.2', 'd.x5p.space',  'e.t9k.space'];
 var current = 0;
 
 GM_addStyle('a:visited {color: lightslategrey !important;}video{width:100%}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
@@ -56,7 +64,7 @@ function main() {
     $('td[width="0"]').remove();
     $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar').addClass('none');
     $('#submenu, #subcontent, #container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
-    $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p').addClass('no-float');
+    $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p, #viewvideo_hd').addClass('no-float');
     $('#myvideo-content, #viewvideo-content, #viewvideo-title').addClass('no-bg');
     $('#myvideo-content, #videobox table tr td').addClass('text-center');
     $('.maindescwithoutborder, .imagechannelinfo').addClass('text-left');
@@ -65,9 +73,9 @@ function main() {
     $('.myvideo').removeClass('blue');
     $('.videothumb, .listchannellarge .imagechannel img, #subcontent p a img').addClass('preview');
     //$('#myvideo-content, #videobox table tr td, #viewvideo-content').addClass('bg-white');
-    $('table[width="99%"], td[width="784"], td[width="784"] table, #viewvideo, #viewvideo-title').addClass('full-width');
+    $('table[width="800"], table[width="760"], table[width="99%"], td[width="900"], td[width="784"], td[width="784"] table, #viewvideo, #viewvideo-title, #hd_video, #viewvideo_hd').addClass('full-width');
     $('#videobox table tr td, .listchannellarge, #fullbox-content,#viewvideo-content, #viewvideo').addClass('no-padding');
-    $('#viewvideo').addClass('no-border');
+    $('#viewvideo, #viewvideo_hd').addClass('no-border');
     $('#viewvideo-content, .videoplayer').addClass('no-margin');
     $('.imagechannelinfo, #useraction, #search').addClass('margin-auto');
     $('.imagechannelinfo').css('width','500px');
@@ -78,6 +86,7 @@ function main() {
     //$('#videodetails-content a .title').attr('style', 'right:10em; padding:0 2em;font-size:16px;line-height:22px;');
     $('#viewvideo-title').addClass('fixed');
     $('#latestvideo').attr('style', 'position: absolute;left:50%;top:200px');
+    $('#headnav td').attr('background', '');
     /*
     $.removeCookie('__cfduid');
     $.removeCookie('CLIPSHARE');
@@ -145,12 +154,14 @@ function main() {
         //A
         if (e.keyCode == 65) {
             var allLink = $('#videodetails-content .title a').attr('href');
-            if (allLink.length > 0)
+            if (pathname == '/uprofile.php') allLink = $('#navsubbar a').eq(1).attr('href');
+            if (allLink.length > 0) 
                 window.location.href = allLink;
         }
         //S
         if (e.keyCode == 83) {
             var authorLink = $('#videodetails-content a').eq(0).attr('href');
+            if (pathname == '/uvideos.php') authorLink = $('#navsubbar a').eq(0).attr('href');
             if (authorLink.length > 0)
                 window.location.href = authorLink;
         }
@@ -184,45 +195,50 @@ function main() {
         }
     });
 }
-function YTPlay2(){
+function YTPlay(){
     var mp4 = 0;
     var strHD = '';
-    if ($('#mediaspace img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
+    if ($('.videoplayer img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
         mp4 = 1;
         strHD = ' HD';
     }
     console.log(mp4);
-    var title = $('#viewvideo-title').text().trim();
-    var str = $('#useraction .floatmenu a').eq(3).attr('href');
-    var parser = document.createElement('a');
-    parser.href = str;
-    var urlreplace = parser.hostname;
-    if (parser.port.length > 0) urlreplace = parser.hostname + ':' + parser.port;
-    str = str.replace(urlreplace, myservers[current]);
-    console.log(str);
-    $('#viewvideo-title').html('<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>' + strHD);
-    $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
-    $('#viewvideo-title').append($('#videodetails-content .title a').clone());
-    //$('#viewvideo-title').append($('#mediaspace a').eq(0).clone());
-    var height = $(window).height();
-    $('.videoplayer').html('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="width:' + width + 'px; height:' + height + 'px"></video>');
-    $('#rightside').parent().attr('width', '0');
-    $("#yt-video").on("error", function(err) {
-        current++;
-        if (current < myservers.length) {
-            str = str.replace(myservers[current - 1], myservers[current]);
-            $("video").attr('src', str);
-            $('#yt-download').attr('href', str);
-        }
-        else location.reload(true);
-    });
-    scrollToPlayer();
+    if ( mp4 > 0) {
+        window.location.href = window.location.href.replace(/view_video/g, 'view_video_hd');
+    }
+    else {
+        var str = $('#useraction .floatmenu a').eq(3).attr('href');
+        var parser = document.createElement('a');
+        parser.href = str;
+        var urlreplace = parser.hostname;
+        if (parser.port.length > 0) urlreplace = parser.hostname + ':' + parser.port;
+        str = str.replace(urlreplace, myservers[current]);
+        console.log(str);
+        var height = $(window).height();
+        $('.videoplayer').html('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video>');
+        var title = $('#viewvideo-title').text().trim();
+        $('#viewvideo-title').html(strHD + '<a id="yt-play" href="iina://weblink?url=' + encodeURIComponent(str) + '">Play</a><a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
+        $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
+        $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+        $('#rightside').parent().attr('width', '0');
+        $("#yt-video").on("error", function(err) {
+            current++;
+            if (current < myservers.length) {
+                str = str.replace(myservers[current - 1], myservers[current]);
+                $("video").attr('src', str);
+                $('#yt-download').attr('href', str);
+                $('#yt-play').attr('href', 'iina://weblink?url=' + encodeURIComponent(str));
+            }
+            else location.reload(true);
+        });
+        scrollToPlayer();
+    }
 }
-function YTPlay(){
+function YTPlayHD(){
     var mp4 = 0;
     if( typeof(so) != 'undefined'){
         var strHD = '';
-        if ($('#mediaspace img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
+        if ($('.videoplayer img[src="images/hd.png"]').length > 0 || $('#hd_video').length > 0) {
             mp4 = 1;
             strHD = 'HD ';
         }
@@ -248,7 +264,7 @@ function YTPlay(){
                 var height = $(window).height();
                 $('.videoplayer').html('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video>');
                 var title = $('#viewvideo-title').text().trim();
-                $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
+                $('#viewvideo-title').html(strHD + '<a id="yt-play" href="iina://weblink?url=' + encodeURIComponent(str) + '">Play</a><a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
                 $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
                 $('#viewvideo-title').append($('#videodetails-content .title a').clone());
                 $('#rightside').parent().attr('width', '0');
@@ -258,6 +274,7 @@ function YTPlay(){
                         str = str.replace(myservers[current - 1], myservers[current]);
                         $("video").attr('src', str);
                         $('#yt-download').attr('href', str);
+                        $('#yt-play').attr('href', 'iina://weblink?url=' + encodeURIComponent(str));
                     }
                     else location.reload(true);
                 });
