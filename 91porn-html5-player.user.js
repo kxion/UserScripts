@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      4.2
+// @version      4.3
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -219,7 +219,7 @@ function YTPlay(){
         var title = $('#viewvideo-title').text().trim();
         $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
         $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
-        $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+        $('#viewvideo-title').append($('#videodetails-content .title a').eq(0).clone());
         $('#rightside').parent().attr('width', '0');
         $("#yt-video").on("error", function(err) {
             current++;
@@ -265,7 +265,7 @@ function YTPlayHD(){
                 var title = $('#viewvideo-title').text().trim();
                 $('#viewvideo-title').html(strHD + '<a id="yt-download" href="' + str + '" download="' + title + '.mp4">' + title + '</a>');
                 $('#viewvideo-title').append($('#videodetails-content a').eq(0).clone());
-                $('#viewvideo-title').append($('#videodetails-content .title a').clone());
+                //$('#viewvideo-title').append($('#videodetails-content .title a').clone());
                 $('#rightside').parent().attr('width', '0');
                 $("#yt-video").on("error", function(err) {
                     current++;

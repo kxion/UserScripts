@@ -6,12 +6,12 @@
 // @include     https://movie.douban.com/people/*
 // @include     http://www.mrskin.com/*
 // @include     https://www.mrskin.com/*
-// @version     0.5
+// @version     0.7
 // @grant       GM_addStyle
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // ==/UserScript==
 
-GM_addStyle('#yt-video{width:100%;background-color:black;}.none{display:none !important}');
+GM_addStyle('a:visited {color: lightgrey !important;}#yt-video{width:100%;height:100vh;background-color:black;}.none{display:none !important}');
 
 if (document.domain == 'movie.douban.com') {
     $('.grid-view .title').each(function(){
@@ -32,8 +32,7 @@ else {
             url: url,
             success: function(data) {
                 var str = data.model.download_url;
-                var height = $(window).height();
-                $('#watchSceneView').prepend('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto" style="height:' + height + 'px"></video>');
+                $('#watchSceneView').prepend('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto"></video>');
                 scrollToPlayer();
                 var title = $('.media-title').text();
                 $('.media-title').append(' <a id="yt-download" class="none" href="' + str + '">' + title + '</a>');
@@ -112,7 +111,7 @@ function rotate(deg) {
     else {
         zoom = 1;
     }
-    $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:50% 50%;height:' + height + 'px;');
+    $('video').attr('style', 'transform:rotate(' + deg + 'deg) scale(' + zoom + ', ' + zoom + ');transform-origin:center center;');
 }
 function scrollToPlayer() {
     $('html, body').animate({
