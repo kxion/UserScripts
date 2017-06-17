@@ -6,7 +6,7 @@
 // @include     https://movie.douban.com/people/*
 // @include     http://www.mrskin.com/*
 // @include     https://www.mrskin.com/*
-// @version     0.7
+// @version     0.8
 // @grant       GM_addStyle
 // @require     https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js
 // ==/UserScript==
@@ -31,7 +31,9 @@ else {
             type: "GET",
             url: url,
             success: function(data) {
-                var str = data.model.download_url;
+                var str = data.setup.levels[0].file;
+                    //data.model.download_url;
+                //alert(str)
                 $('#watchSceneView').prepend('<div id="yt-top" style="height:0;overflow:hidden"></div><video id="yt-video" src="' + str + '" controls autoplay loop preload="auto"></video>');
                 scrollToPlayer();
                 var title = $('.media-title').text();

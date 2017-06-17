@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         91Porn HTML5 Player
-// @version      4.3
+// @version      4.4
 // @author       ytzong
 // @description  91Porn
 // @include      http://*91porn*/*
@@ -12,6 +12,11 @@
 // @grant        GM_addStyle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js
 // ==/UserScript==
+
+if (window.location.host == '91porn.com') {
+    window.location.href = window.location.href.replace('91porn.com', 'email.91dizhi.at.gmail.com.8h3.space');
+    return;
+}
 
 if (document.title == 'Connection Closed') {
     alert('aaa');
@@ -48,7 +53,7 @@ if (pathname == '/video.php' || pathname == '/v.php' || pathname == '/search_res
     }); 
 }
 
-var myservers = ['68.235.35.100:8080', '192.133.81.234:8080', '192.133.81.234:443', '192.240.120.2', 'd.x5p.space',  'e.t9k.space'];
+var myservers = ['192.240.120.2', '192.133.81.234:8080', '192.133.81.234', '192.240.120.35', '192.240.120.75'];
 var current = 0;
 
 GM_addStyle('a:visited {color: lightslategrey !important;}video{width:100%;height:100vh}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
