@@ -53,7 +53,7 @@ if (pathname == '/video.php' || pathname == '/v.php' || pathname == '/search_res
     }); 
 }
 
-var myservers = ['192.240.120.2', '192.133.81.234:8080', '192.133.81.234', '192.240.120.35', '192.240.120.75'];
+var myservers = ['192.240.120.38', '192.240.120.76', '192.133.81.234:8080', '192.133.81.234'];
 var current = 0;
 
 GM_addStyle('a:visited {color: lightslategrey !important;}video{width:100%;height:100vh}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
