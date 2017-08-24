@@ -1,8 +1,7 @@
 // ==UserScript==
-// @name         JD Auto Redirect
-// @namespace    http://twitter.com/ytzong
-// @version      1.1
-// @description  JD Auto Redirect
+// @name         JD
+// @namespace    https://twitter.com/ytzong
+// @version      1.1.1
 // @author       ytzong
 // @include      http*://www.jd.com/*
 // @include      http*://re.jd.com/*
