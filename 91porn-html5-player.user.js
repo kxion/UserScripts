@@ -37,7 +37,6 @@ if (pathname == '/v.php' || pathname == '/search_result.php') {
 }
 if (pathname == '/video.php' || pathname == '/v.php' || pathname == '/search_result.php') {
     $('.imagechannelinfo').contents().not("a, span, br").wrap("<b/>");
-    
     $('.imagechannelinfo').each(function(i){
         var num = parseInt($(this).children('.info').eq(4).next().text()) + parseInt($(this).children('.info').eq(5).next().text());
         var view = parseInt($(this).children('.info').eq(3).next().text());
@@ -53,12 +52,11 @@ if (pathname == '/video.php' || pathname == '/v.php' || pathname == '/search_res
     }); 
 }
 
-var myservers = ['192.240.120.38', '192.240.120.76', '192.133.81.234:8080', '192.133.81.234'];
+var myservers = [/*'192.240.120.106', '192.240.120.107', '192.240.120.108', */'192.240.120.38',/* '192.240.120.35', '192.240.120.37', '192.240.120.34', '192.240.120.75', '192.240.120.76',*/ '192.133.81.234:8080', '192.133.81.234'];
 var current = 0;
 
 GM_addStyle('a:visited {color: lightslategrey !important;}video{width:100%;height:100vh}body{width:100%;overflow-x:hidden;}table, tr, td { border-collapse:collapse;border:0 }#viewvideo-title a{display:inline-block; padding:0.5em 1em;}.border-box{box-sizing:border-box;}.fixed{position: fixed;top: 0;z-index: 9999999999}#paging{padding-bottom:250px}.pagingnav a, span.pagingnav{padding: 10px 20px !important;margin:6px !important}input.page_number {margin: 6px !important;padding: 9px !important;}.none{display:none !important}.full-width{width:100% !important}.no-float{float:none !important}.auto-width{width:auto !important}.clearfix{overflow:hidden;}.text-center{text-align:center;}.text-left{text-align:left;}.preview{margin-bottom:10px;width:352px !important;height:198px !important;overflow:hidden;}.preview, .preview img{padding:0 !important;}.preview img{border: 0!important;width:100%; height:auto !important} .preview, .myvideo .maindescwithoutborder{width:272px !important;} .preview{height:153px !important}.bg-white{background-color:white !important}.bg-white, .bg-white a{color:#333 !important;}.margin-auto, video{margin:0 auto !important}.no-margin{margin:0 !important;}.no-padding{padding:0 !important;}.inline-block{display:inline-block !important;vertical-align: top;}.no-border{border:0 !important}.no-bg{background-image:none !important}.white{color:white!important}');
 //#mediaplayer, #mediaplayer_video_wrapper, #mediaplayer_video{width:100% !important;height:760px !important;left:0 !important}#mediaplayer_jwplayer_controlbar{display:none!important}
-
 main();
 function scrollToPlayer() {
     $('html, body').animate({
@@ -67,6 +65,7 @@ function scrollToPlayer() {
 }
 function main() {
     $('td[width="0"]').remove();
+    $('#videodetails-content .title').eq(1).attr('style', 'background-color:yellow;color:black');
     $('#container td[align="right"],#container td[align="left"],#container_video > table > tbody > tr > td:nth-child(1),#container_video > table > tbody > tr > td:nth-child(3),#container_video #rightside, .arrow-general, #topbar').addClass('none');
     $('#submenu, #subcontent, #container, #leftside, #myvideo, .myvideo, #fullside, #fullbox, .listchannellarge, #paging,.pagingnav').addClass('auto-width');
     $('#leftside, .myvideo, .maindescwithoutborder, .listchannellarge, .listchannellarge .imagechannel, .listchannellarge .imagechannelinfo, .videothumb, #subcontent p, #viewvideo_hd').addClass('no-float');
@@ -138,7 +137,7 @@ function main() {
         function copyTitle() {
             var $temp = $("<input>");
             $("body").append($temp);
-            $temp.val($('#videodetails-content a').eq(0).text().trim()  + ' - ' + $('#yt-download').text().trim() + ' - ' +getUrlParameter('viewkey')).select();
+            $temp.val($('#videodetails-content a').eq(0).text().trim()  + ' - ' + $('#yt-download').text().trim() + ' - ' + getUrlParameter('viewkey')).select();
             document.execCommand("copy");
             $temp.remove();
         }
@@ -160,7 +159,7 @@ function main() {
         if (e.keyCode == 65) {
             var allLink = $('#videodetails-content .title a').attr('href');
             if (pathname == '/uprofile.php') allLink = $('#navsubbar a').eq(1).attr('href');
-            if (allLink.length > 0) 
+            if (allLink.length > 0)
                 window.location.href = allLink;
         }
         //S
@@ -287,7 +286,7 @@ function YTPlayHD(){
                 xhr.setRequestHeader("X-Requested-With", "ShockwaveFlash/23.0.0.173");
                 xhr.setRequestHeader("Proxy-Connection", "keep-alive");
             },
-            error: function() {                 
+            error: function() {
                 location.reload(true);
             }
         });
